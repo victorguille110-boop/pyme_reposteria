@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Categoria(models.Model):
@@ -54,6 +55,13 @@ class Pedido(models.Model):
     ("Despacho", "En Despacho"),
     ("Entregado", "Entregado"),
 ]
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="pedidos")
+
 
     numero_pedido = models.CharField(
         max_length=20,

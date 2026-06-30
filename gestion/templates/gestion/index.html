@@ -126,6 +126,17 @@
             </button>
         </form>
 
+        <!-- Usuario -->
+        {% if request.user.is_authenticated %}
+            <a href="{% url 'panel' %}" class="text-primary" title="Mi cuenta">
+                <span class="material-symbols-outlined text-2xl">person</span>
+        </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="text-primary" title="Iniciar sesión">
+                <span class="material-symbols-outlined text-2xl">person_outline</span>
+        </a>
+        {% endif %}
+
         <!-- Cart icon -->
         <a href="/carrito/" class="relative text-primary">
             <span class="material-symbols-outlined text-2xl">shopping_cart</span>

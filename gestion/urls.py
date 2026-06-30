@@ -28,4 +28,9 @@ urlpatterns = [
     path('registro/', views.registro, name='registro'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('panel/', views.panel, name='panel'),
+
+
+    path('historial/', views.historial, name='historial'),
+    path('pedido/<int:pedido_id>/', views.detalle_pedido, name='detalle_pedido'),
 ]

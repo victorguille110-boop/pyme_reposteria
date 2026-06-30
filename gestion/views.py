@@ -9,6 +9,19 @@ from django.contrib.auth import login as auth_login, logout as auth_logout, auth
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegistroForm
 
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def panel(request):
+    pedidos = Pedido.objects.filter(usuario=request.user)[:1]  # el más reciente
+    pedido_actual = pedidos.first() if pedidos else None
+    historial = Pedido.objects.filter(usuario=request.user)
+
+    return render(request, "gestion/panel.html", {
+        "pedido_actual": pedido_actual,
+        "total_pedidos": historial.count(),
+    })
+
 def registro(request):
     if request.method == "POST":
         form = RegistroForm(request.POST)
@@ -155,7 +168,8 @@ def checkout(request):
         form = CheckoutForm(request.POST, request.FILES)
 
         if form.is_valid():
-
+            if request.user.is_authenticated:
+                pedido.usuario = request.user
             pedido = form.save(commit=False)
             pedido.total = total_final
             pedido.estado = "Pendiente"
@@ -330,3 +344,14 @@ def eliminar_producto(request, producto_id):
         request.session["carrito"] = carrito
 
     return redirect("/carrito/")
+
+@login_required
+def historial(request):
+    pedidos = Pedido.objects.filter(usuario=request.user)
+    return render(request, "gestion/historial.html", {"pedidos": pedidos})
+
+
+@login_required
+def detalle_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
+    return render(request, "gestion/detalle_pedido.html", {"pedido": pedido})
