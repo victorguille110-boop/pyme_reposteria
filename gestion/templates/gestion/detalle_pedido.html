@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pedido {{ pedido.numero_pedido }} | Marcelavovo</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    "surface": "#faf9f8", "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f4f3f2", "surface-container": "#eeeeed",
+                    "outline-variant": "#d4c3be", "outline": "#827470",
+                    "primary": "#442a22", "primary-container": "#5d4037",
+                    "on-primary": "#ffffff", "on-primary-container": "#d4ada1",
+                    "secondary": "#775a19", "secondary-container": "#fed488",
+                    "on-surface": "#1a1c1c", "on-surface-variant": "#504441",
+                },
+                fontFamily: {
+                    "headline": ["Playfair Display", "serif"],
+                    "body": ["Work Sans", "sans-serif"],
+                }
+            }
+        }
+    }
+</script>
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block; vertical-align: middle;
+    }
+</style>
+</head>
+<body class="bg-surface text-on-surface font-body min-h-screen">
+
+<!-- Navbar -->
+<header class="bg-surface-container-lowest sticky top-0 z-50 border-b border-outline-variant flex justify-between items-center px-6 md:px-16 h-20">
+    <a href="/" class="text-2xl font-headline italic text-primary">Marcelavovo</a>
+    <a href="{% url 'historial' %}" class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors text-sm">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>
+        Volver a mis pedidos
+    </a>
+</header>
+
+<main class="max-w-3xl mx-auto px-6 md:px-16 py-12">
+
+    <div class="flex items-center gap-4 mb-8">
+        <h1 class="text-4xl font-headline text-primary">{{ pedido.numero_pedido }}</h1>
+        <span class="text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full
+            {% if pedido.estado == 'Entregado' %}bg-green-100 text-green-700
+            {% elif pedido.estado == 'Pagado' %}bg-blue-100 text-blue-700
+            {% elif pedido.estado == 'Preparacion' %}bg-yellow-100 text-yellow-700
+            {% elif pedido.estado == 'Despacho' %}bg-purple-100 text-purple-700
+            {% elif pedido.estado == 'Revisando' %}bg-orange-100 text-orange-700
+            {% else %}bg-surface-container text-on-surface-variant{% endif %}">
+            {{ pedido.get_estado_display }}
+        </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+        <!-- Datos del cliente -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+            <h2 class="text-lg font-headline text-primary mb-4">Datos de entrega</h2>
+            <div class="space-y-2 text-sm text-on-surface-variant">
+                <p><strong class="text-on-surface">Cliente:</strong> {{ pedido.nombre_cliente }}</p>
+                <p><strong class="text-on-surface">Correo:</strong> {{ pedido.correo }}</p>
+                <p><strong class="text-on-surface">Teléfono:</strong> {{ pedido.telefono }}</p>
+                <p><strong class="text-on-surface">Dirección:</strong> {{ pedido.direccion }}</p>
+                <p><strong class="text-on-surface">Comuna:</strong> {{ pedido.comuna }}</p>
+                {% if pedido.referencia %}
+                <p><strong class="text-on-surface">Referencia:</strong> {{ pedido.referencia }}</p>
+                {% endif %}
+                {% if pedido.observaciones %}
+                <p><strong class="text-on-surface">Observaciones:</strong> {{ pedido.observaciones }}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Resumen del pedido -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+            <h2 class="text-lg font-headline text-primary mb-4">Resumen</h2>
+            <div class="space-y-2 text-sm text-on-surface-variant">
+                <p><strong class="text-on-surface">Fecha:</strong> {{ pedido.fecha|date:"d/m/Y H:i" }}</p>
+                <p><strong class="text-on-surface">Método de pago:</strong> {{ pedido.metodo_pago }}</p>
+                <p><strong class="text-on-surface">Estado:</strong> {{ pedido.get_estado_display }}</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Productos -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 mb-6">
+        <h2 class="text-lg font-headline text-primary mb-4">Productos</h2>
+        <div class="flex flex-col divide-y divide-outline-variant">
+            {% for detalle in pedido.detalles.all %}
+            <div class="flex justify-between items-center py-3">
+                <div class="flex items-center gap-3">
+                    {% if detalle.producto.imagen_url %}
+                    <img src="{{ detalle.producto.imagen_url }}" alt="{{ detalle.producto.nombre }}"
+                         class="w-12 h-12 object-cover rounded">
+                    {% else %}
+                    <div class="w-12 h-12 bg-surface-container rounded flex items-center justify-center">
+                        <span class="material-symbols-outlined text-outline opacity-50">cake</span>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <p class="text-sm font-semibold text-on-surface">{{ detalle.producto.nombre }}</p>
+                        <p class="text-xs text-on-surface-variant">x{{ detalle.cantidad }} &middot; ${{ detalle.precio }} c/u</p>
+                    </div>
+                </div>
+                <span class="text-sm font-semibold text-primary">${{ detalle.subtotal }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="border-t border-outline-variant mt-4 pt-4 space-y-2">
+            <div class="flex justify-between text-sm text-on-surface-variant">
+                <span>Despacho</span>
+                <span>$5.000</span>
+            </div>
+            <div class="flex justify-between text-lg font-headline text-primary">
+                <span>Total</span>
+                <span>${{ pedido.total }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="/" class="inline-block bg-primary text-on-primary px-10 py-4 text-xs font-semibold tracking-widest uppercase hover:bg-primary-container transition-all">
+            Seguir comprando
+        </a>
+    </div>
+
+</main>
+
+<footer class="w-full bg-primary-container px-6 md:px-16 py-10 text-center mt-16">
+    <p class="text-on-primary-container opacity-60 text-xs">© 2026 Marcelavovo Repostería Fina</p>
+</footer>
+
+</body>
+</html>
