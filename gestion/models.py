@@ -47,14 +47,22 @@ class Producto(models.Model):
 
 class Pedido(models.Model):
 
+    id_pedido = models.AutoField(primary_key=True)
+
     ESTADOS = [
-    ("Pendiente", "Pendiente de Revisión"),
-    ("Revisando", "Pago en Revisión"),
-    ("Pagado", "Pago Aprobado"),
-    ("Preparacion", "En Preparación"),
-    ("Despacho", "En Despacho"),
-    ("Entregado", "Entregado"),
-]
+        ("Pendiente", "Pendiente de Revisión"),
+        ("Revisando", "Pago en Revisión"),
+        ("Pagado", "Pago Aprobado"),
+        ("Preparacion", "En Preparación"),
+        ("Despacho", "En Despacho"),
+        ("Entregado", "Entregado"),
+    ]
+
+    numero_pedido = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=True
+    )
     usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
