@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito – Marcelavovo</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-container-low": "#f4f3f2",
+                        "surface-container": "#eeeeed",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#faf9f8",
+                        "primary": "#442a22",
+                        "primary-container": "#5d4037",
+                        "primary-fixed": "#ffdbd0",
+                        "on-primary": "#ffffff",
+                        "on-primary-container": "#d4ada1",
+                        "secondary": "#775a19",
+                        "secondary-container": "#fed488",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#785a1a",
+                        "surface": "#faf9f8",
+                        "on-surface": "#1a1c1c",
+                        "on-surface-variant": "#504441",
+                        "outline": "#827470",
+                        "outline-variant": "#d4c3be",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "on-error-container": "#93000a",
+                    },
+                    fontFamily: {
+                        "headline": ["Playfair Display", "serif"],
+                        "body": ["Work Sans", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface font-body min-h-screen">
+
+<!-- ─── NAVBAR ─── -->
+<header class="bg-surface fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 h-16 border-b border-outline-variant shadow-sm">
+    <a href="/" class="text-xl font-headline italic text-primary tracking-tight">Marcelavovo</a>
+    <a href="/" class="flex items-center gap-1.5 text-on-surface-variant text-xs uppercase tracking-widest hover:text-primary transition-colors">
+        <span class="material-symbols-outlined text-base">arrow_back</span>
+        Volver a la tienda
+    </a>
+</header>
+
+<!-- ─── MAIN CONTENT ─── -->
+<main class="pt-28 pb-20 px-6 md:px-16 max-w-5xl mx-auto">
+
+    <h1 class="text-3xl md:text-4xl font-headline text-primary mb-2">Mi Carrito</h1>
+    <p class="text-on-surface-variant text-sm mb-10">
+        {{ cantidad_carrito }} producto{{ cantidad_carrito|pluralize }} seleccionado{{ cantidad_carrito|pluralize }}
+    </p>
+
+    {% if productos %}
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+        <!-- Product list -->
+        <div class="lg:col-span-2 flex flex-col gap-4">
+            {% for item in productos %}
+            <div class="bg-surface-container-lowest border border-outline-variant flex gap-5 p-5 group">
+
+                <!-- Product image placeholder -->
+                <div class="w-24 h-24 flex-shrink-0 bg-surface-container-low overflow-hidden">
+                    {% if item.producto.imagen_url %}
+                    <img src="{{ item.producto.imagen_url }}" alt="{{ item.producto.nombre }}"
+                         class="w-full h-full object-cover">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <span class="material-symbols-outlined text-3xl text-outline opacity-50">cake</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Info -->
+                <div class="flex flex-col justify-between flex-1 min-w-0">
+                    <div>
+                        {% if item.producto.id_categoria %}
+                        <span class="text-[10px] font-semibold text-secondary tracking-widest uppercase">
+                            {{ item.producto.id_categoria.nombre_categoria }}
+                        </span>
+                        {% endif %}
+                        <h3 class="text-base font-headline text-primary mt-0.5 truncate">{{ item.producto.nombre }}</h3>
+                        <p class="text-xs text-on-surface-variant mt-1">${{ item.producto.precio_base }} / unidad</p>
+                    </div>
+
+                    <!-- Quantity controls + delete -->
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex items-center gap-1">
+                            <a href="/disminuir/{{ item.producto.id_producto }}/"
+                               class="w-8 h-8 flex items-center justify-center border border-outline-variant text-primary hover:bg-surface-container transition-colors text-lg font-bold leading-none">
+                                −
+                            </a>
+                            <span class="w-10 text-center font-semibold text-sm">{{ item.cantidad }}</span>
+                            <a href="/aumentar/{{ item.producto.id_producto }}/"
+                               class="w-8 h-8 flex items-center justify-center border border-outline-variant text-primary hover:bg-surface-container transition-colors text-lg font-bold leading-none">
+                                +
+                            </a>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <span class="font-headline text-primary text-base">${{ item.subtotal }}</span>
+                            <a href="/eliminar/{{ item.producto.id_producto }}/"
+                               class="text-on-surface-variant hover:text-error transition-colors"
+                               title="Eliminar producto">
+                                <span class="material-symbols-outlined text-xl">delete_outline</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Order summary -->
+        <div class="lg:col-span-1">
+            <div class="bg-surface-container-lowest border border-outline-variant p-6 sticky top-24">
+                <h2 class="text-xl font-headline text-primary mb-6 pb-4 border-b border-outline-variant">
+                    Resumen del pedido
+                </h2>
+
+                <div class="flex flex-col gap-3 mb-6">
+                    {% for item in productos %}
+                    <div class="flex justify-between text-sm">
+                        <span class="text-on-surface-variant truncate max-w-[60%]">{{ item.producto.nombre }} ×{{ item.cantidad }}</span>
+                        <span class="font-medium text-on-surface">${{ item.subtotal }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+
+<div class="border-t border-outline-variant pt-4 mb-8 space-y-3">
+
+    <div class="flex justify-between text-sm">
+        <span class="text-on-surface-variant">Subtotal</span>
+        <span>${{ subtotal }}</span>
+    </div>
+
+    <div class="flex justify-between text-sm">
+        <span class="text-green-700 font-medium">Despacho</span>
+        <span class="text-green-700">${{ despacho }}</span>
+    </div>
+
+    <div class="border-t border-outline-variant pt-3 flex justify-between items-baseline">
+        <span class="text-sm font-semibold uppercase tracking-widest text-on-surface-variant">
+            Total
+        </span>
+        <span class="text-2xl font-headline text-primary">
+            ${{ total }}
+        </span>
+    </div>
+
+</div>
+
+                <a href="{% url 'checkout' %}"
+                   class="block w-full text-center bg-primary text-on-primary py-4 text-xs font-semibold tracking-widest uppercase hover:bg-primary-container transition-all shadow-md mb-3">
+                    💳 Finalizar compra
+                </a>
+
+                <a href="/"
+                   class="block w-full text-center border border-outline text-on-surface-variant py-3.5 text-xs font-semibold tracking-widest uppercase hover:bg-surface-container transition-all">
+                    Seguir comprando
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    {% else %}
+
+    <!-- Empty cart state -->
+    <div class="text-center py-32">
+        <span class="material-symbols-outlined text-6xl text-outline opacity-40 mb-6 block">shopping_cart</span>
+        <h2 class="text-2xl font-headline text-primary mb-3">Tu carrito está vacío</h2>
+        <p class="text-on-surface-variant text-sm mb-8">Agrega alguna de nuestras delicias para comenzar.</p>
+        <a href="/"
+           class="inline-block bg-primary text-on-primary px-10 py-4 text-xs font-semibold tracking-widest uppercase hover:bg-primary-container transition-all">
+            Ver catálogo
+        </a>
+    </div>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>

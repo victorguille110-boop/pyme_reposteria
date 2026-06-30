@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcelavovo – Repostería Fina</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "inverse-surface": "#2f3130",
+                        "on-tertiary-container": "#b6b7a0",
+                        "inverse-primary": "#e7bdb1",
+                        "surface-container-low": "#f4f3f2",
+                        "surface-dim": "#dadad9",
+                        "surface-variant": "#e3e2e1",
+                        "secondary-container": "#fed488",
+                        "background": "#faf9f8",
+                        "primary": "#442a22",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eeeeed",
+                        "inverse-on-surface": "#f1f0f0",
+                        "on-tertiary-fixed-variant": "#474836",
+                        "on-primary-container": "#d4ada1",
+                        "secondary": "#775a19",
+                        "secondary-fixed-dim": "#e9c176",
+                        "surface-tint": "#77574d",
+                        "secondary-fixed": "#ffdea5",
+                        "primary-fixed-dim": "#e7bdb1",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e3e2e1",
+                        "surface-container-high": "#e9e8e7",
+                        "on-error": "#ffffff",
+                        "surface": "#faf9f8",
+                        "on-primary-fixed": "#2c160e",
+                        "primary-container": "#5d4037",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "outline": "#827470",
+                        "tertiary-fixed-dim": "#c8c8b0",
+                        "on-background": "#1a1c1c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#5d4201",
+                        "on-secondary-fixed": "#261900",
+                        "primary-fixed": "#ffdbd0",
+                        "outline-variant": "#d4c3be",
+                        "surface-bright": "#faf9f8",
+                        "on-tertiary-fixed": "#1b1d0e",
+                        "tertiary-fixed": "#e4e4cc",
+                        "on-primary-fixed-variant": "#5d4037",
+                        "error": "#ba1a1a",
+                        "on-surface-variant": "#504441",
+                        "tertiary-container": "#474836",
+                        "on-secondary-container": "#785a1a",
+                        "tertiary": "#303221",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#1a1c1c"
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+                    },
+                    fontFamily: {
+                        "headline": ["Playfair Display", "serif"],
+                        "body": ["Work Sans", "sans-serif"],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrolled-header {
+            box-shadow: 0 4px 12px rgba(93, 64, 55, 0.08);
+        }
+        .product-card:hover .cart-btn-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .hero-img {
+            object-position: center 30%;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface font-body overflow-x-hidden">
+
+<!-- ─── NAVBAR ─── -->
+<header id="top-app-bar"
+        class="bg-surface fixed top-0 w-full z-50 flex justify-between items-center px-6 md:px-16 h-20 transition-all border-b border-outline-variant">
+
+    <!-- Left: brand logo -->
+    <a href="/" class="text-2xl font-headline italic text-primary tracking-tight">
+        Marcelavovo
+    </a>
+
+    <!-- Center: nav links (hidden on mobile) -->
+    <nav class="hidden md:flex items-center gap-10">
+        <a href="/" class="text-primary font-semibold text-sm tracking-widest uppercase border-b-2 border-primary pb-0.5">Inicio</a>
+        <a href="#productos" class="text-on-surface-variant text-sm tracking-widest uppercase hover:text-primary transition-colors">Productos</a>
+        <a href="#contacto" class="text-on-surface-variant text-sm tracking-widest uppercase hover:text-primary transition-colors">Contacto</a>
+    </nav>
+
+    <!-- Right: search + cart -->
+    <div class="flex items-center gap-5">
+        <!-- Search form -->
+        <form method="GET" action="/" class="hidden md:flex items-center gap-2">
+            <input
+                type="text"
+                name="buscar"
+                value="{{ request.GET.buscar }}"
+                placeholder="Buscar..."
+                class="bg-surface-container-low border-b border-outline text-sm px-3 py-1.5 w-44 focus:outline-none focus:border-primary transition-colors placeholder:text-on-surface-variant"
+            >
+            <button type="submit" class="text-primary hover:text-secondary transition-colors">
+                <span class="material-symbols-outlined text-xl">search</span>
+            </button>
+        </form>
+
+        <!-- Cart icon -->
+        <a href="/carrito/" class="relative text-primary">
+            <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+            {% if cantidad_carrito > 0 %}
+            <span class="absolute -top-2 -right-2 bg-secondary text-on-secondary text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                {{ cantidad_carrito }}
+            </span>
+            {% endif %}
+        </a>
+    </div>
+</header>
+
+<!-- ─── HERO ─── -->
+<section class="relative pt-20 flex items-center overflow-hidden" style="height: 520px;">
+    <div class="absolute inset-0 z-0">
+        <!-- Fallback gradient hero if no image available -->
+        <div class="w-full h-full bg-gradient-to-br from-primary-fixed via-secondary-fixed to-surface-container-low"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-surface via-surface/50 to-transparent"></div>
+    </div>
+    <div class="relative z-10 max-w-5xl mx-auto w-full px-6 md:px-16">
+        <div class="max-w-lg">
+            <span class="text-xs font-semibold text-secondary uppercase tracking-[0.25em] mb-4 block">
+                Repostería Artesanal · Santiago
+            </span>
+            <h2 class="text-5xl md:text-6xl font-headline text-primary mb-6 leading-tight">
+                Dulzura elevada<br>
+                <em class="font-normal">al arte.</em>
+            </h2>
+            <p class="text-base text-on-surface-variant mb-8 max-w-sm leading-relaxed">
+                Tortas, postres y creaciones artesanales elaboradas con ingredientes premium y mucho cariño.
+            </p>
+            <a href="#productos"
+               class="inline-block bg-primary text-on-primary px-10 py-4 text-xs font-semibold tracking-widest uppercase hover:bg-primary-container transition-all shadow-md">
+                Ver Catálogo
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ─── SEARCH BAR (mobile only) ─── -->
+<div class="md:hidden bg-surface-container-lowest border-b border-outline-variant px-6 py-3">
+    <form method="GET" action="/" class="flex items-center gap-2">
+        <input
+            type="text"
+            name="buscar"
+            value="{{ request.GET.buscar }}"
+            placeholder="¿Qué delicia buscas?"
+            class="flex-1 bg-surface-container-low border-b border-outline text-sm px-3 py-2 focus:outline-none focus:border-primary"
+        >
+        <button type="submit" class="text-primary">
+            <span class="material-symbols-outlined">search</span>
+        </button>
+    </form>
+</div>
+
+<!-- ─── CATEGORY FILTER ─── -->
+<div class="bg-surface-container-lowest border-b border-outline-variant py-4 sticky top-20 z-40" id="productos">
+    <div class="max-w-5xl mx-auto px-6 md:px-16 flex justify-center items-center gap-10 overflow-x-auto">
+        <a href="/" class="text-primary font-bold text-xs tracking-widest uppercase border-b-2 border-primary pb-1 whitespace-nowrap">Todos</a>
+        {% for categoria in categorias %}
+        <a href="?categoria={{ categoria.id_categoria }}"
+           class="text-on-surface-variant font-medium text-xs tracking-widest uppercase hover:text-primary transition-colors whitespace-nowrap
+                  {% if categoria_activa == categoria.id_categoria %}border-b-2 border-primary pb-1 text-primary font-bold{% endif %}">
+            {{ categoria.nombre_categoria }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- ─── PRODUCT GRID ─── -->
+<main class="max-w-5xl mx-auto py-16 px-6 md:px-16">
+
+    {% if request.GET.buscar %}
+    <p class="text-center text-on-surface-variant text-sm mb-10">
+        Resultados para: <strong class="text-primary">"{{ request.GET.buscar }}"</strong>
+    </p>
+    {% endif %}
+
+    {% if not productos %}
+    <div class="text-center py-24">
+        <span class="material-symbols-outlined text-5xl text-outline mb-4 block">search_off</span>
+        <h3 class="text-xl font-headline text-primary">No se encontraron productos</h3>
+        <p class="text-on-surface-variant text-sm mt-2">Intenta con otra búsqueda o <a href="/" class="underline">ver todos</a>.</p>
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-6">
+        {% for producto in productos %}
+        <div class="product-card group cursor-pointer">
+
+            <!-- Image block -->
+            <div class="relative aspect-square overflow-hidden mb-5 bg-surface-container-low">
+                {% if producto.imagen_url %}
+                <img
+                    src="{{ producto.imagen_url }}"
+                    alt="{{ producto.nombre }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                >
+                {% else %}
+                <!-- Placeholder when no image -->
+                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-fixed to-secondary-fixed">
+                    <span class="material-symbols-outlined text-6xl text-primary opacity-30">cake</span>
+                </div>
+                {% endif %}
+
+                <!-- Stock badge -->
+                {% if producto.stock_actual <= 3 and producto.stock_actual > 0 %}
+                <div class="absolute top-3 left-3 bg-error-container text-on-error-container px-3 py-1 text-[11px] font-semibold uppercase tracking-wider">
+                    ¡Últimas unidades!
+                </div>
+                {% endif %}
+
+                <!-- Add to cart overlay (desktop hover) -->
+                {% if producto.stock_actual > 0 %}
+                <a href="/agregar/{{ producto.id_producto }}/"
+                   class="cart-btn-overlay absolute bottom-0 left-0 w-full bg-primary text-on-primary py-3.5 text-center text-xs font-semibold tracking-widest uppercase translate-y-full opacity-0 transition-all duration-300">
+                    Añadir al carrito
+                </a>
+                {% else %}
+                <div class="absolute bottom-0 left-0 w-full bg-surface-container text-on-surface-variant py-3.5 text-center text-xs font-semibold tracking-widest uppercase">
+                    Sin stock
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Product info -->
+            <div class="text-center px-2">
+                {% if producto.id_categoria %}
+                <span class="text-[11px] font-semibold text-secondary tracking-widest uppercase mb-2 block">
+                    {{ producto.id_categoria.nombre_categoria }}
+                </span>
+                {% endif %}
+
+                <h3 class="text-xl font-headline text-primary mb-1">{{ producto.nombre }}</h3>
+
+                {% if producto.descripcion %}
+                <p class="text-on-surface-variant text-xs mb-2 leading-relaxed line-clamp-2">
+                    {{ producto.descripcion }}
+                </p>
+                {% endif %}
+
+                <p class="text-[11px] text-on-surface-variant mb-3">
+                    En stock: {{ producto.stock_actual }} unidades
+                </p>
+
+                <div class="text-xl font-headline text-primary-container mb-4">
+                    ${{ producto.precio_base }}
+                </div>
+
+                <!-- Mobile add button (always visible) -->
+                {% if producto.stock_actual > 0 %}
+                <a href="/agregar/{{ producto.id_producto }}/"
+                   class="md:hidden inline-block w-full bg-primary text-on-primary py-3 text-xs font-semibold tracking-widest uppercase hover:bg-primary-container transition-all">
+                    Añadir al carrito
+                </a>
+                {% else %}
+                <span class="md:hidden inline-block w-full bg-surface-container text-on-surface-variant py-3 text-xs font-semibold tracking-widest uppercase text-center">
+                    Sin stock
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</main>
+
+<!-- ─── NEWSLETTER ─── -->
+<section class="bg-primary-container py-20 mb-0" id="contacto">
+    <div class="max-w-xl mx-auto px-6 text-center">
+        <span class="material-symbols-outlined text-on-primary-container text-4xl mb-5 block">mail_outline</span>
+        <h2 class="text-3xl font-headline text-on-primary mb-4">Recibe nuestra dulzura en tu correo</h2>
+        <p class="text-on-primary-container opacity-80 text-sm mb-8 leading-relaxed">
+            Suscríbete para recibir noticias sobre nuevos lanzamientos, eventos exclusivos y promociones especiales.
+        </p>
+        <div class="flex flex-col md:flex-row gap-3">
+            <input
+                type="email"
+                placeholder="Tu correo electrónico"
+                class="flex-1 bg-white/10 border-b border-on-primary-container text-on-primary px-4 py-3 text-sm focus:outline-none focus:border-secondary transition-colors placeholder:text-on-primary-container/50"
+            >
+            <button class="bg-surface text-primary px-8 py-3 text-xs font-semibold tracking-widest uppercase hover:bg-secondary hover:text-on-secondary transition-all">
+                Suscribirme
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="bg-primary-container w-full px-6 md:px-16 py-14">
+    <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 text-left">
+        <div class="md:col-span-1">
+            <h4 class="text-xl font-headline italic text-on-primary-container mb-4">Marcelavovo</h4>
+            <p class="text-on-primary-container opacity-75 text-sm leading-relaxed">
+                Repostería fina y artesanal dedicada a crear momentos inolvidables a través de sabores clásicos y técnicas modernas.
+            </p>
+        </div>
+        <div>
+            <h5 class="text-xs font-semibold text-on-primary mb-5 uppercase tracking-widest">Navegación</h5>
+            <ul class="flex flex-col gap-2.5">
+                <li><a href="/" class="text-on-primary-container text-xs opacity-75 hover:opacity-100 transition-opacity">Inicio</a></li>
+                <li><a href="#productos" class="text-on-primary-container text-xs opacity-75 hover:opacity-100 transition-opacity">Productos</a></li>
+                <li><a href="/carrito/" class="text-on-primary-container text-xs opacity-75 hover:opacity-100 transition-opacity">Carrito</a></li>
+            </ul>
+        </div>
+        <div>
+            <h5 class="text-xs font-semibold text-on-primary mb-5 uppercase tracking-widest">Contacto</h5>
+            <ul class="flex flex-col gap-2.5">
+                <li class="flex items-center gap-2 text-on-primary-container text-xs opacity-75">
+                    <span class="material-symbols-outlined text-sm">phone</span> +56 9 1234 5678
+                </li>
+                <li class="flex items-center gap-2 text-on-primary-container text-xs opacity-75">
+                    <span class="material-symbols-outlined text-sm">mail</span> hola@marcelavovo.cl
+                </li>
+                <li class="flex items-center gap-2 text-on-primary-container text-xs opacity-75">
+                    <span class="material-symbols-outlined text-sm">location_on</span> Santiago, Chile
+                </li>
+            </ul>
+        </div>
+        <div>
+            <h5 class="text-xs font-semibold text-on-primary mb-5 uppercase tracking-widest">Síguenos</h5>
+            <div class="flex gap-3">
+                <a href="#" class="w-9 h-9 border border-on-primary-container/30 flex items-center justify-center text-on-primary-container text-xs hover:bg-secondary hover:text-on-secondary transition-all">IG</a>
+                <a href="#" class="w-9 h-9 border border-on-primary-container/30 flex items-center justify-center text-on-primary-container text-xs hover:bg-secondary hover:text-on-secondary transition-all">FB</a>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-5xl mx-auto border-t border-on-primary-container/10 pt-8 mt-10 flex flex-col md:flex-row justify-between items-center gap-3">
+        <p class="text-on-primary-container opacity-50 text-xs">© 2025 Marcelavovo Repostería Fina. Todos los derechos reservados.</p>
+        <div class="flex gap-5">
+            <a href="#" class="text-on-primary-container text-xs opacity-50 hover:opacity-100">Privacidad</a>
+            <a href="#" class="text-on-primary-container text-xs opacity-50 hover:opacity-100">Términos</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Shrink header on scroll
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('top-app-bar');
+        if (window.scrollY > 20) {
+            header.classList.add('scrolled-header', 'h-16');
+            header.classList.remove('h-20');
+        } else {
+            header.classList.remove('scrolled-header', 'h-16');
+            header.classList.add('h-20');
+        }
+    });
+</script>
+</body>
+</html>
