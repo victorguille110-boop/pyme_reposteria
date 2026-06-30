@@ -5,6 +5,38 @@ from django.core.mail import send_mail
 from .models import Producto, Categoria, Pedido, DetallePedido
 from .forms import CheckoutForm
 
+from django.contrib.auth import login as auth_login, logout as auth_logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from .forms import RegistroForm
+
+def registro(request):
+    if request.method == "POST":
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            messages.success(request, "Cuenta creada correctamente.")
+            return redirect("/")
+    else:
+        form = RegistroForm()
+    return render(request, "gestion/registro.html", {"form": form})
+
+
+def login_view(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return redirect("/")
+    else:
+        form = AuthenticationForm()
+    return render(request, "gestion/login.html", {"form": form})
+
+
+def logout_view(request):
+    auth_logout(request)
+    return redirect("/")
 
 # =========================
 # HOME

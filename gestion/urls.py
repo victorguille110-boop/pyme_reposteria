@@ -23,4 +23,9 @@ urlpatterns = [
     path('eliminar/<int:producto_id>/', views.eliminar_producto),
 
     path('finalizar/', views.finalizar_compra, name='finalizar_compra'),
+
+    #USUARIOS
+    path('registro/', views.registro, name='registro'),
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
 ]
