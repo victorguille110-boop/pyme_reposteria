@@ -353,5 +353,5 @@ def historial(request):
 
 @login_required
 def detalle_pedido(request, pedido_id):
-    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
+    pedido = get_object_or_404(Pedido, id_pedido=pedido_id, usuario=request.user)
     return render(request, "gestion/detalle_pedido.html", {"pedido": pedido})
