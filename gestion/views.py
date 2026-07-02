@@ -168,9 +168,11 @@ def checkout(request):
         form = CheckoutForm(request.POST, request.FILES)
 
         if form.is_valid():
+
+            pedido = form.save(commit=False)
+
             if request.user.is_authenticated:
                 pedido.usuario = request.user
-            pedido = form.save(commit=False)
             pedido.total = total_final
             pedido.estado = "Pendiente"
             pedido.metodo_pago = "Transferencia"
@@ -209,12 +211,18 @@ Gracias por tu compra.
             request.session["carrito"] = {}
 
             # Guardar pedido
-            request.session["pedido_id"] = pedido.id
+            request.session["pedido_id"] = pedido.id_pedido
 
             return redirect("transferencia")
 
     else:
-        form = CheckoutForm()
+        if request.user.is_authenticated:
+            form = CheckoutForm(initial={
+                "nombre_cliente": request.user.get_full_name() or request.user.username,
+                "correo": request.user.email,
+            })
+        else:
+            form = CheckoutForm()
 
     return render(request, "gestion/checkout.html", {
         "form": form,

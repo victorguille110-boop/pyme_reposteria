@@ -63,50 +63,43 @@ class Pedido(models.Model):
         unique=True,
         blank=True
     )
+
     usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="pedidos")
-
-
-    numero_pedido = models.CharField(
-        max_length=20,
-        unique=True,
-        blank=True
+        related_name="pedidos"
     )
 
     nombre_cliente = models.CharField(max_length=100)
-
     correo = models.EmailField()
-
     telefono = models.CharField(max_length=20)
 
     direccion = models.CharField(
-    max_length=250,
-    default="Sin dirección"
-)
+        max_length=250,
+        blank=True,
+        default=""
+    )
 
     comuna = models.CharField(
-    max_length=100,
-    default="Sin comuna"
-)
+        max_length=100,
+        blank=True,
+        default=""
+    )
 
     referencia = models.TextField(
-    blank=True,
-    null=True,
-    default=""
-)
+        blank=True,
+        null=True,
+        default=""
+    )
 
     observaciones = models.TextField(
         blank=True,
         null=True
     )
 
-    fecha = models.DateTimeField(
-        auto_now_add=True
-    )
+    fecha = models.DateTimeField(auto_now_add=True)
 
     metodo_pago = models.CharField(
         max_length=30,
@@ -136,15 +129,22 @@ class Pedido(models.Model):
 
     def save(self, *args, **kwargs):
 
+        if not self.numero_pedido:
+            import uuid
+            self.numero_pedido = f"TMP-{uuid.uuid4().hex[:8].upper()}"
+
+        nuevo = self.pk is None
+
         super().save(*args, **kwargs)
 
-        if not self.numero_pedido:
-            self.numero_pedido = f"MV-{self.id:05d}"
-            super().save(update_fields=["numero_pedido"])
+        if nuevo and self.numero_pedido.startswith("TMP-"):
+            self.numero_pedido = f"MV-{self.id_pedido:05d}"
+            Pedido.objects.filter(pk=self.pk).update(
+                numero_pedido=self.numero_pedido
+            )
 
     def __str__(self):
         return f"{self.numero_pedido} - {self.nombre_cliente}"
-
 
 # ======================================================
 # DETALLE DEL PEDIDO
