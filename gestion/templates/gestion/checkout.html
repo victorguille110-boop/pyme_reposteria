@@ -62,7 +62,7 @@
 
                 <div>
 
-                    ${{ item.subtotal }}
+                    ${{ item.subtotal|floatformat:0 }}
 
                 </div>
 
@@ -76,7 +76,7 @@
 
        <span>
 
-            ${{ subtotal }}
+            ${{ subtotal|floatformat:0 }}
 
         </span>
 
@@ -98,7 +98,7 @@
 
     <span>
 
-        ${{ total }}
+        ${{ total|floatformat:0 }}
 
     </span>
 

@@ -1,3 +1,4 @@
+{% load formatos %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -159,14 +160,14 @@
     <div class="relative z-10 max-w-5xl mx-auto w-full px-6 md:px-16">
         <div class="max-w-lg">
             <span class="text-xs font-semibold text-secondary uppercase tracking-[0.25em] mb-4 block">
-                Repostería Artesanal · Santiago
+                REPOSTERÍA Y CATERING · SANTIAGO
             </span>
             <h2 class="text-5xl md:text-6xl font-headline text-primary mb-6 leading-tight">
-                Dulzura elevada<br>
-                <em class="font-normal">al arte.</em>
+                El toque dulce<br>
+                <em class="font-normal">para tu celebración.</em>
             </h2>
             <p class="text-base text-on-surface-variant mb-8 max-w-sm leading-relaxed">
-                Tortas, postres y creaciones artesanales elaboradas con ingredientes premium y mucho cariño.
+                Catering de postres con tortas, mesas dulces y una selección de especialidades brasileñas, preparados artesanalmente para hacer inolvidable cada celebración.
             </p>
             <a href="#productos"
                class="inline-block bg-primary text-on-primary px-10 py-4 text-xs font-semibold tracking-widest uppercase hover:bg-primary-container transition-all shadow-md">
@@ -270,7 +271,7 @@
                 </p>
 
                 <div class="text-xl font-headline text-primary-container mb-4">
-                    ${{ producto.precio_base }}
+                    {{ producto.precio_base|pesos }}
                 </div>
 
                 <!-- Mobile add button (always visible) -->
